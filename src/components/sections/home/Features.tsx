@@ -1,146 +1,196 @@
 'use client';
 
+import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Zap, Shield, BarChart3, GitBranch, Clock, Users } from 'lucide-react';
+import { Star, Quote, ArrowRight } from 'lucide-react';
+import Image from 'next/image';
+import { useSmartNavigation } from '@/hooks/useSmartNavigation';
 
 const DEFAULT_FEATURES = {
-  sectionTitle: 'Everything You Need for Modern Testing',
-  sectionSubtitle:
-    "Comprehensive AI-powered testing tools designed for today's development workflows",
-  features: [
+  title: 'What Our Customers Say',
+  subtitle: 'Join thousands of satisfied customers who trust our platform',
+  ctaText: 'Read All Reviews',
+  ctaHref: '/reviews',
+  showCta: true,
+  reviews: [
     {
-      icon: 'Zap',
-      title: 'AI-Powered Test Generation',
-      description:
-        'Automatically generate comprehensive test suites using advanced machine learning algorithms that understand your codebase.',
-      badge: 'Smart',
+      id: '1',
+      name: 'Sarah Chen',
+      role: 'CTO at TechFlow',
+      company: 'TechFlow',
+      rating: 5,
+      content:
+        'This platform transformed our development workflow. The AI-powered features saved us countless hours and improved our code quality significantly.',
+      avatar:
+        'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face',
+      verified: true,
     },
     {
-      icon: 'Shield',
-      title: 'Advanced Security Testing',
-      description:
-        'Identify vulnerabilities and security flaws before they reach production with our integrated security scanning.',
-      badge: 'Secure',
+      id: '2',
+      name: 'Marcus Rodriguez',
+      role: 'Lead Developer',
+      company: 'InnovateLabs',
+      rating: 5,
+      content:
+        'Outstanding support and incredibly intuitive interface. Our team was up and running in minutes, not hours. The performance improvements are remarkable.',
+      avatar:
+        'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
+      verified: true,
     },
     {
-      icon: 'BarChart3',
-      title: 'Real-Time Analytics',
-      description:
-        'Get instant insights into test performance, coverage metrics, and quality trends with beautiful dashboards.',
-      badge: 'Insights',
-    },
-    {
-      icon: 'GitBranch',
-      title: 'Seamless CI/CD Integration',
-      description:
-        'Integrate effortlessly with your existing development pipeline and popular tools like GitHub, GitLab, and Jenkins.',
-      badge: 'DevOps',
-    },
-    {
-      icon: 'Clock',
-      title: 'Lightning Fast Execution',
-      description:
-        'Run thousands of tests in parallel with our optimized cloud infrastructure, reducing feedback time by 90%.',
-      badge: 'Speed',
-    },
-    {
-      icon: 'Users',
-      title: 'Team Collaboration',
-      description:
-        'Enable seamless collaboration between developers, QA engineers, and stakeholders with shared test environments.',
-      badge: 'Teamwork',
+      id: '3',
+      name: 'Emily Watson',
+      role: 'Product Manager',
+      company: 'StartupX',
+      rating: 5,
+      content:
+        "The analytics and insights provided are game-changing. We've increased our deployment frequency by 300% while maintaining zero downtime.",
+      avatar:
+        'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face',
+      verified: true,
     },
   ],
+  stats: {
+    totalReviews: '2,500+',
+    averageRating: '4.9',
+    satisfactionRate: '98%',
+  },
 } as const;
 
 type FeaturesProps = Partial<typeof DEFAULT_FEATURES>;
 
-const iconMap = {
-  Zap,
-  Shield,
-  BarChart3,
-  GitBranch,
-  Clock,
-  Users,
-};
-
 export default function Features(props: FeaturesProps) {
   const config = { ...DEFAULT_FEATURES, ...props };
+  const navigate = useSmartNavigation();
+
+  const handleCtaClick = () => {
+    navigate(config.ctaHref);
+  };
+
+  const renderStars = (rating: number) => {
+    return Array.from({ length: 5 }, (_, i) => (
+      <Star
+        key={i}
+        className={`w-4 h-4 ${
+          i < rating ? 'fill-yellow-400 text-yellow-400' : 'text-muted-foreground'
+        }`}
+      />
+    ));
+  };
 
   return (
-    <section id="features" className="bg-background text-foreground py-20 lg:py-32">
+    <section id="features" className="bg-background text-foreground py-16 sm:py-24">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6">
-            <span data-editable="sectionTitle">{config.sectionTitle}</span>
+        <div className="text-center mb-16">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4">
+            <span data-editable="title">{config.title}</span>
           </h2>
-          <p className="text-lg text-muted-foreground">
-            <span data-editable="sectionSubtitle">{config.sectionSubtitle}</span>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            <span data-editable="subtitle">{config.subtitle}</span>
           </p>
-        </div>
 
-        {/* Features Grid */}
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {config.features.map((feature, idx) => {
-            const IconComponent = iconMap[feature.icon as keyof typeof iconMap];
-
-            return (
-              <Card
-                key={idx}
-                className="bg-card text-card-foreground border-border hover:bg-accent/5 transition-colors duration-300 group"
-              >
-                <CardContent className="p-8">
-                  {/* Icon and Badge */}
-                  <div className="flex items-center justify-between mb-6">
-                    <div className="bg-primary/10 text-primary p-3 rounded-lg group-hover:bg-primary/20 transition-colors duration-300">
-                      <IconComponent className="w-6 h-6" />
-                    </div>
-                    <Badge variant="secondary" className="bg-secondary text-secondary-foreground">
-                      <span data-editable={`features[${idx}].badge`}>{feature.badge}</span>
-                    </Badge>
-                  </div>
-
-                  {/* Content */}
-                  <div className="space-y-4">
-                    <h3 className="text-xl font-semibold">
-                      <span data-editable={`features[${idx}].title`}>{feature.title}</span>
-                    </h3>
-                    <p className="text-muted-foreground leading-relaxed">
-                      <span data-editable={`features[${idx}].description`}>
-                        {feature.description}
-                      </span>
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
-
-        {/* Bottom CTA Section */}
-        <div className="text-center mt-16 p-8 bg-muted/30 rounded-2xl border border-border">
-          <h3 className="text-2xl font-semibold mb-4">Ready to Transform Your Testing?</h3>
-          <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-            Join thousands of development teams who have already revolutionized their testing
-            workflows with our AI-powered platform.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Shield className="w-4 h-4" />
-              <span>Enterprise Security</span>
+          {/* Stats */}
+          <div className="flex flex-wrap justify-center gap-8 mt-8">
+            <div className="text-center">
+              <div className="text-2xl font-bold text-primary">
+                <span data-editable="stats.totalReviews">{config.stats.totalReviews}</span>
+              </div>
+              <div className="text-sm text-muted-foreground">Reviews</div>
             </div>
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Clock className="w-4 h-4" />
-              <span>24/7 Support</span>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-primary flex items-center justify-center gap-1">
+                <span data-editable="stats.averageRating">{config.stats.averageRating}</span>
+                <Star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+              </div>
+              <div className="text-sm text-muted-foreground">Average Rating</div>
             </div>
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Users className="w-4 h-4" />
-              <span>Team Collaboration</span>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-primary">
+                <span data-editable="stats.satisfactionRate">{config.stats.satisfactionRate}</span>
+              </div>
+              <div className="text-sm text-muted-foreground">Satisfaction</div>
             </div>
           </div>
         </div>
+
+        {/* Reviews Grid */}
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 mb-12">
+          {config.reviews.map((review, idx) => (
+            <Card
+              key={review.id}
+              className="bg-card text-card-foreground hover:shadow-lg transition-shadow duration-300"
+            >
+              <CardContent className="p-6">
+                {/* Quote Icon */}
+                <Quote className="w-8 h-8 text-primary mb-4" />
+
+                {/* Review Content */}
+                <blockquote className="text-foreground mb-6 leading-relaxed">
+                  <span data-editable={`reviews[${idx}].content`}>"{review.content}"</span>
+                </blockquote>
+
+                {/* Rating */}
+                <div className="flex items-center gap-1 mb-4">{renderStars(review.rating)}</div>
+
+                {/* Reviewer Info */}
+                <div className="flex items-center gap-3">
+                  <div className="relative">
+                    <Image
+                      src={review.avatar}
+                      alt={`${review.name} avatar`}
+                      width={48}
+                      height={48}
+                      className="rounded-full object-cover"
+                      data-editable-src={`reviews[${idx}].avatar`}
+                    />
+                    {review.verified && (
+                      <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-primary rounded-full flex items-center justify-center">
+                        <div className="w-2 h-2 bg-primary-foreground rounded-full" />
+                      </div>
+                    )}
+                  </div>
+                  <div>
+                    <div className="font-semibold text-foreground flex items-center gap-2">
+                      <span data-editable={`reviews[${idx}].name`}>{review.name}</span>
+                      {review.verified && (
+                        <Badge variant="secondary" className="text-xs">
+                          Verified
+                        </Badge>
+                      )}
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      <span data-editable={`reviews[${idx}].role`}>{review.role}</span>
+                      {review.company && (
+                        <>
+                          {' at '}
+                          <span data-editable={`reviews[${idx}].company`}>{review.company}</span>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        {/* CTA */}
+        {config.showCta && (
+          <div className="text-center">
+            <Button
+              onClick={handleCtaClick}
+              size="lg"
+              className="bg-primary text-primary-foreground hover:bg-primary/90 transition-colors duration-200"
+              data-editable-href="ctaHref"
+              data-href={config.ctaHref}
+            >
+              <span data-editable="ctaText">{config.ctaText}</span>
+              <ArrowRight className="w-4 h-4 ml-2" />
+            </Button>
+          </div>
+        )}
       </div>
     </section>
   );

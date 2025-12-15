@@ -1,49 +1,55 @@
 'use client';
 
 import { Card, CardContent } from '@/components/ui/card';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Star } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Star, ArrowRight, Quote } from 'lucide-react';
+import Image from 'next/image';
+import { useSmartNavigation } from '@/hooks/useSmartNavigation';
 
 const DEFAULT_REVIEWS = {
-  title: 'Trusted by Development Teams Worldwide',
-  subtitle: 'See what our customers say about transforming their testing workflows',
+  title: 'What Our Customers Say',
+  subtitle: 'Join thousands of satisfied customers who trust our platform',
+  ctaText: 'Read All Reviews',
+  ctaHref: '/reviews',
   reviews: [
     {
       id: '1',
       name: 'Sarah Chen',
-      role: 'Senior QA Engineer',
-      company: 'TechFlow Inc',
-      avatar:
-        'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face',
+      role: 'Product Manager',
+      company: 'TechFlow',
       rating: 5,
       content:
-        "This AI-powered testing platform has revolutionized our development cycle. We've reduced testing time by 70% while catching more bugs than ever before. The automation capabilities are simply outstanding.",
-      featured: true,
+        'This platform has completely transformed how we handle our workflow. The automation features saved us 20+ hours per week.',
+      avatar:
+        'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=400&fit=crop&crop=face',
     },
     {
       id: '2',
       name: 'Marcus Rodriguez',
-      role: 'Lead Developer',
+      role: 'Founder',
       company: 'StartupLab',
-      avatar:
-        'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
       rating: 5,
       content:
-        'The intelligent test generation saved us weeks of manual work. Our team can now focus on building features instead of writing repetitive test cases. Game-changer for our startup.',
-      featured: false,
+        'Incredible ROI and seamless integration. Our team productivity increased by 40% within the first month of implementation.',
+      avatar:
+        'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&crop=face',
     },
     {
       id: '3',
       name: 'Emily Watson',
-      role: 'DevOps Manager',
-      company: 'CloudScale Systems',
-      avatar:
-        'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face',
+      role: 'CTO',
+      company: 'InnovateCorp',
       rating: 5,
       content:
-        "Integration was seamless and the results were immediate. Our CI/CD pipeline is now more reliable, and we've eliminated flaky tests completely. Highly recommend for any serious development team.",
-      featured: false,
+        "The best investment we've made for our tech stack. Outstanding support team and continuous feature improvements.",
+      avatar:
+        'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop&crop=face',
     },
+  ],
+  stats: [
+    { label: 'Customer Rating', value: '4.9/5' },
+    { label: 'Reviews', value: '2,500+' },
+    { label: 'Satisfaction', value: '98%' },
   ],
 } as const;
 
@@ -51,22 +57,19 @@ type ReviewsProps = Partial<typeof DEFAULT_REVIEWS>;
 
 export default function Reviews(props: ReviewsProps) {
   const config = { ...DEFAULT_REVIEWS, ...props };
+  const navigate = useSmartNavigation();
+
+  const handleCTAClick = () => {
+    navigate(config.ctaHref);
+  };
 
   const renderStars = (rating: number) => {
     return Array.from({ length: 5 }, (_, i) => (
       <Star
         key={i}
-        className={`w-4 h-4 ${i < rating ? 'fill-primary text-primary' : 'fill-muted text-muted'}`}
+        className={`w-4 h-4 ${i < rating ? 'fill-primary text-primary' : 'text-muted'}`}
       />
     ));
-  };
-
-  const getInitials = (name: string) => {
-    return name
-      .split(' ')
-      .map(word => word[0])
-      .join('')
-      .toUpperCase();
   };
 
   return (
@@ -82,16 +85,33 @@ export default function Reviews(props: ReviewsProps) {
           </p>
         </div>
 
+        {/* Stats */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 mb-16">
+          {config.stats.map((stat, idx) => (
+            <div key={idx} className="text-center">
+              <div className="text-3xl sm:text-4xl font-bold text-primary mb-2">
+                <span data-editable={`stats[${idx}].value`}>{stat.value}</span>
+              </div>
+              <div className="text-muted-foreground">
+                <span data-editable={`stats[${idx}].label`}>{stat.label}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+
         {/* Reviews Grid */}
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
           {config.reviews.map((review, idx) => (
             <Card
               key={review.id}
-              className={`bg-card text-card-foreground border-border hover:shadow-lg transition-all duration-300 ${
-                review.featured ? 'md:col-span-2 lg:col-span-1 ring-2 ring-primary/20' : ''
-              }`}
+              className="bg-card text-card-foreground border-border hover:shadow-lg transition-shadow duration-300"
             >
               <CardContent className="p-6">
+                {/* Quote Icon */}
+                <div className="mb-4">
+                  <Quote className="w-8 h-8 text-primary" />
+                </div>
+
                 {/* Rating */}
                 <div className="flex items-center gap-1 mb-4">{renderStars(review.rating)}</div>
 
@@ -101,19 +121,17 @@ export default function Reviews(props: ReviewsProps) {
                 </blockquote>
 
                 {/* Reviewer Info */}
-                <div className="flex items-center gap-4">
-                  <Avatar className="w-12 h-12">
-                    <AvatarImage
+                <div className="flex items-center gap-3">
+                  <div className="relative w-12 h-12 rounded-full overflow-hidden bg-muted">
+                    <Image
                       src={review.avatar}
                       alt={`${review.name} avatar`}
+                      fill
+                      className="object-cover"
                       data-editable-src={`reviews[${idx}].avatar`}
                     />
-                    <AvatarFallback className="bg-primary text-primary-foreground">
-                      {getInitials(review.name)}
-                    </AvatarFallback>
-                  </Avatar>
-
-                  <div className="flex-1">
+                  </div>
+                  <div>
                     <div className="font-semibold text-foreground">
                       <span data-editable={`reviews[${idx}].name`}>{review.name}</span>
                     </div>
@@ -129,20 +147,18 @@ export default function Reviews(props: ReviewsProps) {
           ))}
         </div>
 
-        {/* Trust Indicators */}
-        <div className="mt-16 text-center">
-          <div className="flex flex-wrap justify-center items-center gap-8 text-muted-foreground">
-            <div className="flex items-center gap-2">
-              <div className="flex">{renderStars(5)}</div>
-              <span className="text-sm font-medium">5.0 average rating</span>
-            </div>
-            <div className="text-sm">
-              <span className="font-semibold text-foreground">500+</span> development teams
-            </div>
-            <div className="text-sm">
-              <span className="font-semibold text-foreground">99.9%</span> uptime SLA
-            </div>
-          </div>
+        {/* CTA */}
+        <div className="text-center">
+          <Button
+            onClick={handleCTAClick}
+            size="lg"
+            className="bg-primary text-primary-foreground hover:bg-primary/90 transition-colors duration-200"
+            data-editable-href="ctaHref"
+            data-href={config.ctaHref}
+          >
+            <span data-editable="ctaText">{config.ctaText}</span>
+            <ArrowRight className="w-4 h-4 ml-2" />
+          </Button>
         </div>
       </div>
     </section>
