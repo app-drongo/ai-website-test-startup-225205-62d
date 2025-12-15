@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import Hero from '@/components/sections/home/Hero'
 import Features from '@/components/sections/home/Features'
 import Reviews from '@/components/sections/home/Reviews'
+import Pricing from '@/components/sections/home/Pricing'
 
 export const metadata: Metadata = {
   title: 'Test Startup',
@@ -20,6 +21,9 @@ export default function HomePage() {
       </section>
       <section id="reviews">
         <Reviews />
+      </section>
+      <section id="pricing">
+        <Pricing />
       </section>
     </>
   )

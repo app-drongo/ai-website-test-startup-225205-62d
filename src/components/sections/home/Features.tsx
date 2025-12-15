@@ -3,59 +3,38 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Star, Quote, ArrowRight } from 'lucide-react';
-import Image from 'next/image';
+import { Check, Zap, Shield, Rocket, Star, ArrowRight } from 'lucide-react';
 import { useSmartNavigation } from '@/hooks/useSmartNavigation';
 
 const DEFAULT_FEATURES = {
-  title: 'What Our Customers Say',
-  subtitle: 'Join thousands of satisfied customers who trust our platform',
-  ctaText: 'Read All Reviews',
-  ctaHref: '/reviews',
-  showCta: true,
-  reviews: [
+  title: 'Everything you need to scale',
+  subtitle: 'Powerful features designed for modern tech teams',
+  description:
+    'From startups to enterprise, our platform grows with you. Built with cutting-edge technology and designed for performance.',
+  ctaText: 'Start Free Trial',
+  ctaHref: '/signup',
+  features: [
     {
-      id: '1',
-      name: 'Sarah Chen',
-      role: 'CTO at TechFlow',
-      company: 'TechFlow',
-      rating: 5,
-      content:
-        'This platform transformed our development workflow. The AI-powered features saved us countless hours and improved our code quality significantly.',
-      avatar:
-        'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face',
-      verified: true,
+      icon: 'Zap',
+      title: 'Lightning Fast',
+      description: 'Built on modern infrastructure with sub-100ms response times globally',
+      highlight: '99.9% uptime',
     },
     {
-      id: '2',
-      name: 'Marcus Rodriguez',
-      role: 'Lead Developer',
-      company: 'InnovateLabs',
-      rating: 5,
-      content:
-        'Outstanding support and incredibly intuitive interface. Our team was up and running in minutes, not hours. The performance improvements are remarkable.',
-      avatar:
-        'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
-      verified: true,
+      icon: 'Shield',
+      title: 'Enterprise Security',
+      description: 'SOC 2 compliant with end-to-end encryption and advanced threat protection',
+      highlight: 'Bank-grade security',
     },
     {
-      id: '3',
-      name: 'Emily Watson',
-      role: 'Product Manager',
-      company: 'StartupX',
-      rating: 5,
-      content:
-        "The analytics and insights provided are game-changing. We've increased our deployment frequency by 300% while maintaining zero downtime.",
-      avatar:
-        'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face',
-      verified: true,
+      icon: 'Rocket',
+      title: 'Scale Infinitely',
+      description:
+        'Auto-scaling architecture that handles millions of requests without breaking a sweat',
+      highlight: 'Zero downtime',
     },
   ],
-  stats: {
-    totalReviews: '2,500+',
-    averageRating: '4.9',
-    satisfactionRate: '98%',
-  },
+  benefits: ['Real-time collaboration', 'Advanced analytics dashboard', '24/7 expert support'],
 } as const;
 
 type FeaturesProps = Partial<typeof DEFAULT_FEATURES>;
@@ -64,133 +43,99 @@ export default function Features(props: FeaturesProps) {
   const config = { ...DEFAULT_FEATURES, ...props };
   const navigate = useSmartNavigation();
 
-  const handleCtaClick = () => {
+  const handleCTAClick = () => {
     navigate(config.ctaHref);
   };
 
-  const renderStars = (rating: number) => {
-    return Array.from({ length: 5 }, (_, i) => (
-      <Star
-        key={i}
-        className={`w-4 h-4 ${
-          i < rating ? 'fill-yellow-400 text-yellow-400' : 'text-muted-foreground'
-        }`}
-      />
-    ));
+  const getIcon = (iconName: string) => {
+    const icons = {
+      Zap: Zap,
+      Shield: Shield,
+      Rocket: Rocket,
+    };
+    const IconComponent = icons[iconName as keyof typeof icons] || Star;
+    return <IconComponent className="h-8 w-8" />;
   };
 
   return (
-    <section id="features" className="bg-background text-foreground py-16 sm:py-24">
+    <section id="features" className="bg-background text-foreground py-24">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center mb-16">
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4">
+        <div className="text-center max-w-3xl mx-auto mb-16">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6">
             <span data-editable="title">{config.title}</span>
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-xl text-muted-foreground mb-4">
             <span data-editable="subtitle">{config.subtitle}</span>
           </p>
-
-          {/* Stats */}
-          <div className="flex flex-wrap justify-center gap-8 mt-8">
-            <div className="text-center">
-              <div className="text-2xl font-bold text-primary">
-                <span data-editable="stats.totalReviews">{config.stats.totalReviews}</span>
-              </div>
-              <div className="text-sm text-muted-foreground">Reviews</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-primary flex items-center justify-center gap-1">
-                <span data-editable="stats.averageRating">{config.stats.averageRating}</span>
-                <Star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
-              </div>
-              <div className="text-sm text-muted-foreground">Average Rating</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-primary">
-                <span data-editable="stats.satisfactionRate">{config.stats.satisfactionRate}</span>
-              </div>
-              <div className="text-sm text-muted-foreground">Satisfaction</div>
-            </div>
-          </div>
+          <p className="text-lg text-muted-foreground">
+            <span data-editable="description">{config.description}</span>
+          </p>
         </div>
 
-        {/* Reviews Grid */}
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 mb-12">
-          {config.reviews.map((review, idx) => (
+        {/* Feature Cards */}
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 mb-16">
+          {config.features.map((feature, idx) => (
             <Card
-              key={review.id}
-              className="bg-card text-card-foreground hover:shadow-lg transition-shadow duration-300"
+              key={idx}
+              className="bg-card text-card-foreground border-border hover:shadow-lg transition-all duration-300 group"
             >
-              <CardContent className="p-6">
-                {/* Quote Icon */}
-                <Quote className="w-8 h-8 text-primary mb-4" />
-
-                {/* Review Content */}
-                <blockquote className="text-foreground mb-6 leading-relaxed">
-                  <span data-editable={`reviews[${idx}].content`}>"{review.content}"</span>
-                </blockquote>
-
-                {/* Rating */}
-                <div className="flex items-center gap-1 mb-4">{renderStars(review.rating)}</div>
-
-                {/* Reviewer Info */}
-                <div className="flex items-center gap-3">
-                  <div className="relative">
-                    <Image
-                      src={review.avatar}
-                      alt={`${review.name} avatar`}
-                      width={48}
-                      height={48}
-                      className="rounded-full object-cover"
-                      data-editable-src={`reviews[${idx}].avatar`}
-                    />
-                    {review.verified && (
-                      <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-primary rounded-full flex items-center justify-center">
-                        <div className="w-2 h-2 bg-primary-foreground rounded-full" />
-                      </div>
-                    )}
+              <CardContent className="p-8">
+                <div className="flex items-center justify-between mb-6">
+                  <div className="bg-primary text-primary-foreground p-3 rounded-lg group-hover:scale-110 transition-transform duration-300">
+                    {getIcon(feature.icon)}
                   </div>
-                  <div>
-                    <div className="font-semibold text-foreground flex items-center gap-2">
-                      <span data-editable={`reviews[${idx}].name`}>{review.name}</span>
-                      {review.verified && (
-                        <Badge variant="secondary" className="text-xs">
-                          Verified
-                        </Badge>
-                      )}
-                    </div>
-                    <div className="text-sm text-muted-foreground">
-                      <span data-editable={`reviews[${idx}].role`}>{review.role}</span>
-                      {review.company && (
-                        <>
-                          {' at '}
-                          <span data-editable={`reviews[${idx}].company`}>{review.company}</span>
-                        </>
-                      )}
-                    </div>
-                  </div>
+                  <Badge variant="secondary" className="bg-accent text-accent-foreground">
+                    <span data-editable={`features[${idx}].highlight`}>{feature.highlight}</span>
+                  </Badge>
                 </div>
+
+                <h3 className="text-xl font-semibold mb-3">
+                  <span data-editable={`features[${idx}].title`}>{feature.title}</span>
+                </h3>
+
+                <p className="text-muted-foreground leading-relaxed">
+                  <span data-editable={`features[${idx}].description`}>{feature.description}</span>
+                </p>
               </CardContent>
             </Card>
           ))}
         </div>
 
-        {/* CTA */}
-        {config.showCta && (
-          <div className="text-center">
-            <Button
-              onClick={handleCtaClick}
-              size="lg"
-              className="bg-primary text-primary-foreground hover:bg-primary/90 transition-colors duration-200"
-              data-editable-href="ctaHref"
-              data-href={config.ctaHref}
-            >
-              <span data-editable="ctaText">{config.ctaText}</span>
-              <ArrowRight className="w-4 h-4 ml-2" />
-            </Button>
+        {/* Benefits List */}
+        <div className="bg-muted text-muted-foreground rounded-2xl p-8 mb-12">
+          <div className="max-w-2xl mx-auto">
+            <h3 className="text-2xl font-semibold text-foreground mb-6 text-center">
+              Plus everything else you need
+            </h3>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {config.benefits.map((benefit, idx) => (
+                <div key={idx} className="flex items-center gap-3">
+                  <div className="bg-primary text-primary-foreground p-1 rounded-full flex-shrink-0">
+                    <Check className="h-4 w-4" />
+                  </div>
+                  <span className="text-foreground font-medium">
+                    <span data-editable={`benefits[${idx}]`}>{benefit}</span>
+                  </span>
+                </div>
+              ))}
+            </div>
           </div>
-        )}
+        </div>
+
+        {/* CTA */}
+        <div className="text-center">
+          <Button
+            size="lg"
+            onClick={handleCTAClick}
+            data-editable-href="ctaHref"
+            data-href={config.ctaHref}
+            className="bg-primary text-primary-foreground hover:bg-primary/90 px-8 py-4 text-lg font-semibold group"
+          >
+            <span data-editable="ctaText">{config.ctaText}</span>
+            <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform duration-200" />
+          </Button>
+        </div>
       </div>
     </section>
   );
